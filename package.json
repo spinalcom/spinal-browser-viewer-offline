@@ -2,7 +2,7 @@
   "name": "spinal-browser-viewer-annotations",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.html",
   "dependencies": {
     "spinal-organ-forge": "git+https://github.com/spinalcom/spinal-organ-forge.git"
   }
