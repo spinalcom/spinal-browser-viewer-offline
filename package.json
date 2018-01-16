@@ -7,6 +7,6 @@
     "spinal-organ-forge": "git+https://github.com/spinalcom/spinal-organ-forge.git"
   },
   "scripts": {
-    "models": "browserify ../spinal-lib-forgefile/forgefile.js -o www/js/browser.forgefile.js -t babelify -g windowify -t uglifyify"
+    "models": "browserify ../spinal-lib-forgefile/forgefile.js -o www/js/browser.forgefile.js -t [ babelify --presets [ es2015 ] ] -g windowify -g uglifyify"
   }
 }
