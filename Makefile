@@ -77,10 +77,13 @@ doc:
 bower:
 	bower install --allow-root
 
-init: bower compile lib css link
+models:
+	npm run models
+
+init: bower compile lib css link models
 
 run:
 	@true
 
 
-.PHONY: all init run compile lib link css create_outdir doc bower
+.PHONY: all init run compile lib link css create_outdir doc bower models
