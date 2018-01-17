@@ -1,19 +1,23 @@
 angular.module('app.controllers')
-  .controller('navbarCtrl', ["$scope", "authService", "$location",
-    function ($scope, authService, $location) {
+  .controller('navbarCtrl', ["$scope", "authService", "$location", "$routeParams",
+    function ($scope, authService, $location, $routeParams) {
       $scope.username = "";
       $scope.connected = false;
-
       authService.wait_connect().then(() => {
         $scope.username = authService.get_user().username;
         $scope.connected = true;
+        $scope.viewer = $routeParams.filepath;
+        if ($scope.viewer) {
+          $scope.viewer = atob($scope.viewer);
+        } else {
+          $scope.viewer = "viewer";
+        }
+        console.log($routeParams.filepath);
 
       });
-
       $scope.logout = () => {
         $location.path('/login');
       };
-
       // get in SpinalDrive_Env
       $scope.layouts = [
 
@@ -22,7 +26,7 @@ angular.module('app.controllers')
           name: "viewer",
           cfg: {
             isClosable: true,
-            title: "Viewer",
+            title: "viewer",
             type: 'component',
             componentName: 'SpinalHome',
             componentState: {
@@ -32,7 +36,7 @@ angular.module('app.controllers')
           }
         },
 
-      
+
       ];
 
 
