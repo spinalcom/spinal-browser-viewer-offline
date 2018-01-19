@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.html",
   "dependencies": {
+    "spinal-browser-drive": "git+https://github.com/spinalcom/spinal-browser-drive.git",
+    "spinal-lib-forgefile": "git+https://github.com/spinalcom/spinal-lib-forgefile.git",
+    "spinal-env-drive-plugin-forge": "git+https://github.com/spinalcom/spinal-env-drive-plugin-forge.git",
     "spinal-organ-forge": "git+https://github.com/spinalcom/spinal-organ-forge.git"
   },
   "scripts": {
