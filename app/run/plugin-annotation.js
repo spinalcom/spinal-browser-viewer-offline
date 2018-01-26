@@ -1,10 +1,10 @@
-angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialog", "authService",
-  function (spinalModelDictionary, $mdDialog, authService) {
+angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialog", "$mdToast", "authService","$rootScope","$compile",
+  function (spinalModelDictionary, $mdDialog,$mdToast, authService,$rootScope,$compile) {
 
     class PannelAnnotation {
       constructor(viewer, options) {
         Autodesk.Viewing.Extension.call(this, viewer, options);
-        this.viewer = viewer;
+        
         viewer.registerContextMenuCallback('rightClickMenu', (menu, status) => {
            menu.push({
              title : 'See Annotation',
@@ -24,13 +24,53 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
            })
         });
 
+        $rootScope.notes_color = {}
+        this.viewer = viewer;
         this.panel = null;
         this.user = authService.get_user();
         this.detailPanelContent = null;
         this.detailPanel = null;
         this._selected = null;
+        this._sel = null; // item selected
 
-        console.log(this.user);
+        $rootScope.$on('colorpicker-closed', (event, data)=>{
+          var id = data.name.split("'")[1];
+
+          this.changeColorInHub(id,data.value);
+
+        })
+        $rootScope.execute_func = (name,id,other = null) => {
+          console.log(name);
+          switch (name) {
+            case "addItem":
+              this.AddItems(id)
+              break;
+
+            case "changeColor":
+              this.changeColorInHub(id,other);
+              break;
+
+            case "view":
+              this.viewOrHide(id);
+              break;
+
+            case "rename":
+              this.renameNote(id);
+              break;
+
+            case "delete":
+              this.deleteNoteItem(id,other);
+              break;
+
+            case "info":
+              this.DetailPanel(id);
+              break;
+            case "selectItem":
+              this.selectNote(id);
+              break;
+        
+          }
+        }
       }
 
       load() {
@@ -49,26 +89,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         this.createUI();
       }
 
-      /*RightClick(menu, status) {
-        console.log(viewer);
-        menu.push({
-          title: 'See Annotation',
-          target: () => {
-            var items = this.viewer.getSelection();          
-
-            if (items.length == 1) {
-              document.getElementById("search").value = items[0];
-              var list = document.getElementById("allList");
-
-              this.getContainer(items[0], (data) => {
-                this.changeContainer(list, data);
-              });
-            } else
-              alert("you must select 1 item");
-          }
-        });
-      }*/
-
       unload() {
         this.viewer.toolbar.removeControl(this.subToolbar);
         return true;
@@ -81,7 +101,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         this.initialize();
 
         var button1 = new Autodesk.Viewing.UI.Button('Annotation');
-        button1.setIcon("fa-pencil");
 
         button1.onClick = (e) => {
           if (!this.panel.isVisible()) {
@@ -91,7 +110,9 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           }
         };
 
-        button1.addClass('Annotation');
+        button1.addClass('fa');
+        button1.addClass('fa-pencil');
+        button1.addClass('fa-2x');
         button1.setToolTip('Annotation');
 
         this.subToolbar = new Autodesk.Viewing.UI.ControlGroup('my-Annotation');
@@ -103,13 +124,24 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
 
         this.panel.initializeMoveHandlers(this.panel.container);
-        // this.panel.container.appendChild(this.panel.createCloseButton());
+        this.panel.container.appendChild(this.panel.createScrollContainer());
         var _container = this.panel.container;
 
         var func_success = (data) => {
+
           var container = _container;
           var allNotes = data;
           container.className += " panelViewer";
+
+
+          var div = document.createElement('div');
+          div.className = "_container";
+
+          
+
+          var con_header = document.createElement('div');
+          con_header.className = "header";
+
 
           ////////////////////////////////////////////////
           //             Button Add Note                //
@@ -169,8 +201,13 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           //            Card List                      //
           ///////////////////////////////////////////////
           var list = document.createElement('div');
-          list.className = "list-group";
+          list.className = "list-group allList";
           list.id = "allList";
+
+
+          
+          var items = document.createElement('div');
+          items.className = "list-group allItems";
 
           ///////////////////////////////////////////////
           //             Search Input                  //
@@ -211,21 +248,29 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           headerDiv.appendChild(vDiv);
           headerDiv.appendChild(hDiv);
 
-          container.appendChild(headerDiv);
+          con_header.appendChild(headerDiv);
 
           //search
           searchDiv.appendChild(searchIcon);
           searchDiv.appendChild(search);
-          container.appendChild(searchDiv);
+          con_header.appendChild(searchDiv);
+
+
+          
+
+          div.appendChild(con_header);
+          div.appendChild(list);
+          div.appendChild(items);
+
 
           //list
-          container.appendChild(list);
+          container.appendChild(div);
 
           ///////////////////////////////////////////////
           //          When notes change                //
           ///////////////////////////////////////////////
           allNotes.bind(() => {
-            this.changeContainer(list, allNotes);
+            this.changeContainer(list ,allNotes);
           });
         };
 
@@ -294,6 +339,16 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
             noteSelected.push(models[j]);
           }
           notes[indexNote].allObject = noteSelected;
+
+          var toast = $mdToast.simple()
+          .content("Item added !")
+          .action('OK')
+          .highlightAction(true)
+          .hideDelay(0)
+          .position('bottom right')
+          .parent("body");
+
+          $mdToast.show(toast);
         }, function () {
           console.log("error");
         });
@@ -396,30 +451,44 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
         var notes = this.model;
 
-        if(item != null) {
-          for (let i = 0; i < notes.length; i++) {
-            if(notes[i].id == note) {
-              for(var j = 0; j < notes[i].allObject.length; j++){
-                if(notes[i].allObject[j].dbId == item) {
-                    notes[i].allObject.splice(j,1);
-                    break;
+
+        var dialog = $mdDialog.confirm()
+              .ok("Delete !")
+              .title('Do you want to remove it?')
+              .cancel('Cancel')
+              .clickOutsideToClose(true);
+        
+              $mdDialog.show(dialog)
+              .then((result) => {
+                
+                if(item != null) {
+                  for (let i = 0; i < notes.length; i++) {
+                    if(notes[i].id == note) {
+                      for(var j = 0; j < notes[i].allObject.length; j++){
+                        if(notes[i].allObject[j].dbId == item) {
+                            notes[i].allObject.splice(j,1);
+                            break;
+                        }
+                      }
+                    }
+                      
+                  }
+                } else {
+                  for (let i = 0; i < notes.length; i++) {
+                      if(notes[i].id == note){
+                          notes.splice(i,1);
+                          break;
+                      }
+                  }
                 }
-              }
-            }
-              
-          }
-        } else {
-          for (let i = 0; i < notes.length; i++) {
-              if(notes[i].id == note){
-                  notes.splice(i,1);
-                  break;
-              }
-          }
-        }
+
+              }, function(){});
+
       }
 
       changeAllIcon(iconName, show) {
         var notes = this.model;
+
         for (var i = 0; i < notes.length; i++) {
           var element = document.getElementsByClassName("show" + notes[i].id)[0];
           element.innerHTML = `<i class="fa ${iconName}" aria-hidden="true"></i>`;
@@ -427,14 +496,132 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         }
       }
 
-      renameNote(id,title) {
+      renameNote(id) {
         var notes = this.model;
-        for (let i = 0; i < notes.length; i++) {
-          if(notes[i].id == id) {
-              notes[i].title.set(title);
-              break;
-          } 
+
+        var confirm = $mdDialog.prompt()
+              .title('Rename Note')
+              .placeholder('Please enter the title')
+              .ariaLabel('Rename')
+              .clickOutsideToClose(true)
+              .required(true)
+              .ok('Rename')
+              .cancel('Cancel');
+              $mdDialog.show(confirm).then((result) => {
+                for (let i = 0; i < notes.length; i++) {
+                  if(notes[i].id == id) {
+                      notes[i].title.set(result);
+                      break;
+                  } 
+                }
+              }, function () {});
+      }
+
+
+      selectNote(id) {
+        var notes = this.model;
+        this._sel = id;
+
+        var div = document.getElementsByClassName("allItems")[0];
+        div.innerHTML = "";
+
+        var contener = angular.element(div);
+        
+        var header = angular.element('<div></div>')
+        var content = angular.element('<md-list>\
+        </md-list>');
+
+        contener.append(header);
+        contener.append(content);
+        
+        
+        if(id != null) {
+          for (let i = 0; i < notes.length; i++) {
+            if(notes[i].id == id){
+              var selected = angular.element(`<h3>Note Selected : ${notes[i].title.get()}</h3>`);
+              header.append(selected);
+
+              if(notes[i].allObject.length > 0) {
+                for(let j = 0; j < notes[i].allObject.length; j++) {
+                  var _ob =  `
+                    <md-list-item>
+                      <p>${notes[i].allObject[j].name.get()}</p>
+          
+                      <md-button class="i_btn" aria-label="delete_item" ng-click="execute_func('delete','${notes[i].id.get()}','${notes[i].allObject[j].dbId}')">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </md-button>
+                    </md-list-item>
+                  `
+                  content.append(_ob);
+                }
+              } else {
+                content.append('<h5>No item inside</h5>');
+              }
+            }
+          }
+        } else {
+          content.append('<h5>No item selected</h5>');
         }
+
+        $compile(header)($rootScope);
+        $compile(content)($rootScope);
+
+      }
+
+
+      createitem(parent, note) {
+
+        $rootScope.notes_color[note.id.get()] = note.color.get();
+
+        var div = `<md-list-item>
+            <p class="noteTitle" ng-click="execute_func('selectItem','${note.id.get()}')">${note.title.get()}</p>
+
+            <md-button class="i_btn" aria-label="add_item" id=${note.id.get()} ng-click="execute_func('addItem','${note.id.get()}')">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </md-button>
+            <button colorpicker type="button" colorpicker-position="top" ng-model="notes_color['${note.id.get()}']">Change Color</button>
+
+            <md-button class="i_btn show${note.id.get()}" id=${note.id.get()} aria-label="view" ng-click="execute_func('view','${note.id.get()}')" show="false">
+              <i class="fa fa-eye" aria-hidden="true"></i>
+            </md-button>
+
+            <md-button class="i_btn" id=${note.id.get()} aria-label="rename" ng-click="execute_func('rename','${note.id.get()}')">
+              <i class="fa fa-pencil" aria-hidden="true"></i>
+            </md-button>
+
+            <md-button class="i_btn" id=${note.id.get()} aria-label="delete" ng-click="execute_func('delete','${note.id.get()}')">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </md-button>
+
+            <md-button class="i_btn" id=${note.id.get()} aria-label="info" ng-click="execute_func('info','${note.id.get()}')">
+              <i class="fa fa-info" aria-hidden="true"></i>
+            </md-button>
+
+          </md-list-item>`;
+
+          var contener = angular.element(div);
+
+          parent.append(contener);
+          $compile(contener)($rootScope);
+      }
+
+
+      viewOrHide(id) {
+
+        var element = document.getElementsByClassName("show" + id)[0];
+        var show = element.getAttribute("show");
+
+        if(show == "false") {
+          element.setAttribute("show","true");
+          this.changeItemColor(id);
+          element.innerHTML = '<i class="fa fa-eye-slash" aria-hidden="true"></i>';
+        } else {
+          this.restoreColor(id);
+          element.setAttribute("show","false");
+          element.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
+          
+        }
+
       }
 
       //////////////////////////////////////////////////////////////
@@ -442,8 +629,31 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
       //////////////////////////////////////////////////////////////
       changeContainer(list, allNotes) {
         list.innerHTML = "";
-        var _self = this;
 
+        var _self = this;
+        var contener = angular.element(list);
+ 
+        var div = angular.element('<md-list>\
+        </md-list>');
+
+
+        contener.append(div);
+        $compile(div)($rootScope);
+        
+        if(allNotes.length > 0) {
+          for (let index = 0; index < allNotes.length; index++) {
+            const element = allNotes[index];
+            this.createitem(div,element);
+          }
+        } else {
+          div.append('<h1>No note created ! create one</h1>');
+        }
+
+        this.selectNote(this._sel);
+
+
+
+/*
         if (allNotes.length > 0) {
 
           for (var index = 0; index < allNotes.length; index++) {
@@ -542,7 +752,17 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
             deleteButton.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
 
             deleteButton.onclick = function() {
-              _self.deleteNoteItem(this.id);
+              var dialog = $mdDialog.confirm()
+              .ok("Delete !")
+              .title('Do you want to remove it?')
+              .cancel('Cancel')
+              .clickOutsideToClose(true);
+        
+              $mdDialog.show(dialog)
+              .then((result) => {
+                _self.deleteNoteItem(this.id);
+              }, function(){});
+              
             }
 
 
@@ -598,7 +818,19 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
                 b.onclick = () => {
                   var t = b.id.split("/");
-                  _self.deleteNoteItem(t[0], t[1]);
+
+                  var dialog = $mdDialog.confirm()
+                  .ok("Delete !")
+                  .title('Do you want to remove it?')
+                  .cancel('Cancel')
+                  .clickOutsideToClose(true);
+            
+                  $mdDialog.show(dialog)
+                  .then((result) => {
+                    _self.deleteNoteItem(t[0], t[1]);
+                  }, function(){});
+
+                  
                 };
 
                 li.appendChild(b);
@@ -621,11 +853,9 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         } else {
           list.innerHTML = "<h6>No item found</h6>";
         }
-      }
+*/
 
-      ////////////////////////////////////////////////////
-      //                END                             //
-      ///////////////////////////////////////////////////
+      }
 
       DetailPanel(id) {
         var notes = this.model;
@@ -685,16 +915,17 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
             var textAreaValue = document.querySelector(`textarea[id='${sendButton.id}']`).value;
             document.querySelector(`textarea[id='${sendButton.id}']`).value = "";
 
-            var message = new MessageModel();
-            message.id.set(newGUID());
-            message.owner.set(this.user.id);
-            message.username.set(this.user.username);
-            message.date.set(Date.now());
-            message.message.set(textAreaValue);
+            if(textAreaValue != "" && textAreaValue.trim() != "") {
+              var message = new MessageModel();
+              message.id.set(newGUID());
+              message.owner.set(this.user.id);
+              message.username.set(this.user.username);
+              message.date.set(Date.now());
+              message.message.set(textAreaValue);
 
-            this._selected.notes.push(message);
+              this._selected.notes.push(message);
+            }
 
-            //this.DisplayMessage(formDiv);
         }
 
         sendButtonDiv.appendChild(sendButton);
@@ -702,6 +933,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         formDiv.appendChild(textareaDiv);
         formDiv.appendChild(sendButtonDiv);
         
+        this.detailPanel.setVisible(true);
         
         notes.bind( () => {   
           this.DisplayMessage(formDiv)
@@ -757,7 +989,17 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
               span.id = this._selected.notes[i].id
 
               span.onclick = function(){
-                _self.deteteMessage(this.id,formDiv);
+                var dialog = $mdDialog.confirm()
+                  .ok("Delete !")
+                  .title('Do you want to remove it?')
+                  .cancel('Cancel')
+                  .clickOutsideToClose(true);
+            
+                  $mdDialog.show(dialog)
+                  .then((result) => {
+                    _self.deteteMessage(this.id,formDiv);
+                  }, function(){});
+                
               }
 
               closeDiv.appendChild(span);
@@ -786,7 +1028,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         this.detailPanelContent.appendChild(formDiv);
 
         this.detailPanel.setTitle(this._selected.title.get());
-        this.detailPanel.setVisible(true);
         this.detailPanel.container.appendChild(this.detailPanelContent);
 
         var d = document.getElementsByClassName("messageContainer")[0];
@@ -808,6 +1049,9 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
 
       }
+
+
+
 
 
     } // end class

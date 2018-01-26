@@ -23,7 +23,8 @@
     "golden-layout": "1.5.9",
     "material-design-icons": "^3.0.1",
     "jquery-ui": "^1.12.1",
-    "font-awesome": "^4.7.0"
+    "font-awesome": "^4.7.0",
+    "angular-bootstrap-colorpicker": "^3.0.32"
   },
   "devDependencies": {},
   "resolutions": {

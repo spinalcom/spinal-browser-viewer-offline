@@ -4,6 +4,25 @@ angular.module('app.spinalforge.plugin')
       $scope.injector = $injector;
       $scope.uid = layout_uid.get();
       console.log("forgeviewerCtrl start")
+
+      $rootScope.allNotes = []
+      // load etc..
+      $rootScope.allNotes = [
+        {
+          title: new Str("test1"),
+        },
+        {
+          title: new Str("test1"),
+        },
+        {
+          title: new Str("test1"),
+        },
+        {
+          title: new Str("test1"),
+        },
+            ]
+
+
       spinalModelDictionary.init().then(function (ForgeFile) {
         var viewerApp, viewables, indexViewable;
         console.log("forgeviewerCtrl start 2")
@@ -15,6 +34,7 @@ angular.module('app.spinalforge.plugin')
           env: 'AutodeskProduction',
           accessToken: ''
         };
+
 
         var documentId = 'urn:' + ForgeFile.urn.get();
         get_oAuthToken(ForgeFile, documentId, init_autodesk);
@@ -62,6 +82,7 @@ angular.module('app.spinalforge.plugin')
 
 
         function onItemLoadSuccess(viewer, item) {
+          viewer.scope = $scope;
           console.log('Viewers are equal: ' + (viewer === viewerApp.getCurrentViewer()));
         }
 
