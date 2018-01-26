@@ -16,6 +16,8 @@
     "bower": "^1.8.2",
     "commander": "^2.13.0",
     "exorcist": "^1.0.0",
+    "spinal-core-hub": "git+https://github.com/spinalcom/spinal-core-hub.git#3.0.0",
+    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git#2.3.0",
     "spinal-browser-drive": "git+https://github.com/spinalcom/spinal-browser-drive.git",
     "spinal-lib-forgefile": "git+https://github.com/spinalcom/spinal-lib-forgefile.git",
     "spinal-lib-forge-env": "git+https://github.com/spinalcom/spinal-lib-forge-env.git",
