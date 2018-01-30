@@ -6,7 +6,7 @@ angular.module('app.spinalcom', ['settings', 'ngMaterial']);
 angular.module('app.spinalforge.plugin', []);
 
 angular.module('SpinalApp', ['ngAnimate', 'ngMaterial', 'app.directives', 'app.route',
-    'app.services', 'app.controllers', 'ngMdIcons', 'settings', 'app.spinalcom', 'app.spinalforge.plugin',
+    'app.services', 'app.controllers', 'ngMdIcons', 'settings', 'app.spinalcom', 'app.spinalforge.plugin', "colorpicker.module"
   ])
   .run(['$rootScope', '$location', 'authService', function ($rootScope, $location, authService) {
     let user = authService.get_user();

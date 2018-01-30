@@ -20,11 +20,12 @@ var newGUID = function () {
 
 function PanelClass(viewer, title) {
     Autodesk.Viewing.UI.DockingPanel.call(this, viewer.container, newGUID(), title);
+    
     this.container.style.height = "auto";
     this.container.style.width = "auto";
-    this.container.style.minWidth = "300px";
-    this.container.style.left = "0px";
+    this.container.style.minWidth = "400px";
     this.container.style.top = "0px";
+    this.container.style.resize = "auto";
     this.viewer = viewer;
     v = this.viewer;
 }

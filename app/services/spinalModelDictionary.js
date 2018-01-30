@@ -9,6 +9,7 @@ angular.module('app.spinalcom')
           authService.wait_connect().then(() => {
             let user = authService.get_user();
             let path = $routeParams.filepath;
+            console.log(path)
             if (path) {
               path = atob(path);
               ngSpinalCore.load(path).then((m) => {

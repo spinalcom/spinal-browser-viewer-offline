@@ -27,7 +27,8 @@ LIBSRC= bower_components/angular/angular.js \
   bower_components/bootstrap/dist/js/bootstrap.min.js \
   bower_components/golden-layout/dist/goldenlayout.min.js \
   bower_components/angular-material-icons/angular-material-icons.min.js \
-  bower_components/jquery-ui/jquery-ui.min.js
+  bower_components/jquery-ui/jquery-ui.min.js \
+  bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.min.js
 
 LIBOUT= $(OUTDIR)/js/lib.compile.min.js
 
@@ -37,6 +38,7 @@ CSS= bower_components/angular-material/angular-material.css \
   bower_components/golden-layout/src/css/goldenlayout-dark-theme.css \
   bower_components/font-awesome/css/font-awesome.css \
   bower_components/bootstrap/dist/css/bootstrap.min.css \
+  bower_components/angular-bootstrap-colorpicker/css/colorpicker.min.css \
   app/css/app.css
 
 CSSOUT= $(OUTDIR)/css/css.compile.css

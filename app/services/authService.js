@@ -4,12 +4,14 @@ angular.module('app.spinalcom')
       let factory = {};
       let user = {
         username: "",
-        password: ""
+        password: "",
+        id : ""
       };
       let is_Connected = false;
-      factory.save_user = (username, password) => {
+      factory.save_user = (username, password, id) => {
         user.username = username;
         user.password = password;
+        user.id = id;
         window.localStorage.setItem("spinalhome_cfg", btoa(JSON.stringify(user)));
       };
       factory.get_user = () => {
@@ -20,14 +22,9 @@ angular.module('app.spinalcom')
         return user;
       };
 
-      factory.save_user = (username, password) => {
-        user.username = username;
-        user.password = password;
-        window.localStorage.setItem("spinalhome_cfg", btoa(JSON.stringify(user)));
-      };
       factory.logout = (username, password) => {
         if (user.username != "") {
-          factory.save_user("", "");
+          factory.save_user("", "","");
           location.reload();
         }
       };
@@ -51,7 +48,7 @@ angular.module('app.spinalcom')
             }
             ngSpinalCore.connect("http://" + u + ":" + password +
               "@" + config.spinalhub_url + ":" + config.spinalhub_port + "/");
-            factory.save_user(username, password);
+            factory.save_user(username, password,u);
             is_Connected = true;
             deferred.resolve();
             for (i = 0; i < wait_connectList.length; i++) {
