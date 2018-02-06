@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.html",
+  "bin": {
+    "create_viewer-annotations_env": "create_viewer-annotations_env.js"
+  },
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
