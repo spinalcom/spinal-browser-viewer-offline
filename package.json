@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.html",
+  "bin": {
+    "create_viewer-annotations_env": "create_viewer-annotations_env.js"
+  },
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -25,6 +28,8 @@
     "windowify": "^0.3.0"
   },
   "scripts": {
-    "models": "browserify ../spinal-lib-forgefile/forgefile.js -o www/js/browser.forgefile.js -t [ babelify --presets [ es2015 ] ] -g windowify -g uglifyify"
+    "models": "browserify ../spinal-lib-forgefile/forgefile.js -o www/js/browser.forgefile.js -t [ babelify --presets [ es2015 ] ] -g windowify -g uglifyify",
+    "postinstall": "npm run spinal-register",
+    "spinal-register": "spinal-register"
   }
 }
