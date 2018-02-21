@@ -134,12 +134,19 @@ function compile_lib(config) {
     }
   }
   var output = fs.createWriteStream(libPath);
-
   b.transform("babelify", {
-    presets: ["es2015"]
-  });
-  b.transform("windowify");
-  b.transform("uglifyify");
+      global: true,
+      presets: ["es2015"],
+    })
+    .transform("windowify", {
+      global: true,
+    })
+    .transform("uglifyify", {
+      global: true,
+      mangle: {
+        keep_fnames: true
+      }
+    });
   b.bundle()
     .pipe(exorcist(libPath + '.map'))
     .pipe(output);
