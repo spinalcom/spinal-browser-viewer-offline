@@ -30,7 +30,7 @@
   "scripts": {
     "postinstall": "npm run spinal-register",
     "spinal-register": "spinal-register",
-    "compile": "node compile_js"
+    "compile": "node compile_js.js"
   },
   "devDependencies": {
     "exorcist": "^1.0.1",
@@ -43,6 +43,7 @@
     "browserify": "^14.5.0",
     "commander": "^2.13.0",
     "uglifyify": "^4.0.5",
-    "windowify": "^0.3.0"
+    "windowify": "^0.3.0",
+    "csso": "^3.4.0"
   }
 }
