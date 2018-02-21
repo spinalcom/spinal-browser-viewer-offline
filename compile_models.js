@@ -50,7 +50,7 @@ b.transform("babelify", {
     mangle: {
       keep_fnames: true
     }
-  })
+  });
 b.bundle()
   .pipe(exorcist(outputPath + '.map'))
   .pipe(output);
