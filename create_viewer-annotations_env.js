@@ -84,7 +84,7 @@ function getConfig() {
 function getOwnPlugins() {
   if (fs.existsSync(package_path) === true) {
     var reg = /spinal-env-[-_\w]*/;
-    var res = {}
+    var res = {};
     var _package = JSON.parse(fs.readFileSync(package_path, 'utf8'));
     var dependencies = _package.dependencies;
     for (var key in dependencies) {
