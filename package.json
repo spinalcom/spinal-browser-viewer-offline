@@ -28,9 +28,9 @@
     "windowify": "^0.3.0"
   },
   "scripts": {
-    "models": "node compile_models.js",
     "postinstall": "npm run spinal-register",
-    "spinal-register": "spinal-register"
+    "spinal-register": "spinal-register",
+    "compile": "node compile_js"
   },
   "devDependencies": {
     "exorcist": "^1.0.1",
@@ -42,6 +42,7 @@
     "bower": "^1.8.2",
     "browserify": "^14.5.0",
     "commander": "^2.13.0",
-    "resolve-tree": "^0.1.13"
+    "uglifyify": "^4.0.5",
+    "windowify": "^0.3.0"
   }
 }
