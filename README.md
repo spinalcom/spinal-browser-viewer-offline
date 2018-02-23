@@ -1,1 +1,1 @@
-# spinal-organ-viewerShare
+# spinal-browser-viewer-annotations
