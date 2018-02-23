@@ -23,7 +23,7 @@
     "spinal-core-hub": "git+https://github.com/spinalcom/spinal-core-hub.git#3.0.0",
     "spinal-lib-forge-env": "git+https://github.com/spinalcom/spinal-lib-forge-env.git",
     "spinal-lib-forgefile": "git+https://github.com/spinalcom/spinal-lib-forgefile.git",
-    "spinal-organ-forge": "git+https://github.com/spinalcom/spinal-organ-forge.git",
+    "spinal-organ-forge": "git+https://github.com/spinalcom/spinal-organ-forge.git#develop",
     "uglifyify": "^4.0.5",
     "windowify": "^0.3.0"
   },
