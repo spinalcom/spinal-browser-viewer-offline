@@ -1,7 +1,7 @@
 let appSpinalforgePlugin = angular.module('app.spinalforge.plugin');
 appSpinalforgePlugin.run(["$rootScope", "$compile", "$templateCache", "$http", "spinalRegisterViewerPlugin",
     function ($rootScope, $compile, $templateCache, $http, spinalRegisterViewerPlugin) {
-      spinalRegisterViewerPlugin.register("PannelAnnotation");
+      // spinalRegisterViewerPlugin.register("PannelAnnotation");
       // var extensions = ['PannelAnnotation', "Autodesk.ADN.Viewing.Extension.Color"];
 
       let load_template = (uri, name) => {
