@@ -1,9 +1,8 @@
 angular.module('app.spinalforge.plugin')
-  .controller('forgeViewerCtrl', ["$scope", "$rootScope", "$mdDialog", "authService", "$compile", "$injector", "layout_uid", "spinalModelDictionary",
-    function ($scope, $rootScope, $mdDialog, authService, $compile, $injector, layout_uid, spinalModelDictionary) {
+  .controller('forgeViewerCtrl', ["$scope", "$rootScope", "$mdDialog", "authService", "$compile", "$injector", "layout_uid", "spinalModelDictionary", "spinalRegisterViewerPlugin",
+    function ($scope, $rootScope, $mdDialog, authService, $compile, $injector, layout_uid, spinalModelDictionary, spinalRegisterViewerPlugin) {
       $scope.injector = $injector;
       $scope.uid = layout_uid.get();
-
       $rootScope.allNotes = [];
       // load etc..
       spinalModelDictionary.init().then(function (ForgeFile) {
@@ -26,7 +25,8 @@ angular.module('app.spinalforge.plugin')
             }
           },
         };
-        var extensions = ['PannelAnnotation', "Autodesk.ADN.Viewing.Extension.Color"]
+        spinalRegisterViewerPlugin.register("Autodesk.ADN.Viewing.Extension.Color");
+        // var extensions = ['PannelAnnotation', "Autodesk.ADN.Viewing.Extension.Color"];
 
         var options = {
           env: 'Local',
@@ -49,7 +49,7 @@ angular.module('app.spinalforge.plugin')
           }
           options.docid = path;
         }
-        init_autodesk(documentId)
+        init_autodesk(documentId);
 
         // get_oAuthToken(ForgeFile, documentId, init_autodesk);
 
@@ -82,6 +82,7 @@ angular.module('app.spinalforge.plugin')
             oViewer.initialize();
             console.log(options.docid);
             oViewer.loadModel(options.docid, config, onItemLoadSuccess, onDocumentLoadFailure);
+            $scope.oviewer = oViewer;
             // for (var i = 0; i < docs.length; i++) {
             //   var r = $('<div><button id="view_' + i + '">' + docs[i].name + '<div><img id="img__' + i + '" src="' + docs[i].path + '.png"></div></button></div>');
             //   $('#list').append(r);
@@ -130,8 +131,9 @@ angular.module('app.spinalforge.plugin')
           // console.log('Viewers are equal: ' + (viewer === viewerApp.getCurrentViewer()));
           oViewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function onGeometryLoadEvent() {
             oViewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, onGeometryLoadEvent);
+            let extensions = spinalRegisterViewerPlugin.get();
             for (var i = 0; i < extensions.length; i++) {
-              oViewer.loadExtension(extensions[i], options)
+              oViewer.loadExtension(extensions[i], options);
             }
             // var spinalExtension = oViewer.getExtension("SpinalCom.Forge.Extension");
             // if (typeof spinalExtension != 'undefined')
