@@ -47,6 +47,7 @@ angular.module('app.spinalforge.plugin')
               break;
             }
           }
+          path = window.location.origin + path;
           options.docid = path;
         }
         init_autodesk(documentId);

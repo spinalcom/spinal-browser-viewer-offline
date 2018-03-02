@@ -1,7 +1,3 @@
-import {
-  endPoint
-} from "spinal-lib-forgefile/endPoint";
-
 angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialog", "$mdToast", "authService", "$rootScope", "$compile", "$routeParams", "ngSpinalCore", "spinalRegisterViewerPlugin",
   function (spinalModelDictionary, $mdDialog, $mdToast, authService, $rootScope, $compile, $routeParams, ngSpinalCore, spinalRegisterViewerPlugin) {
     spinalRegisterViewerPlugin.register("PannelendPoint");
@@ -603,8 +599,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
                     <md-button class="i_btn" aria-label="delete_item" ng-click="execute_func_endpoint('delete','${endpoints[i].id.get()}','${endpoints[i].allObject[j].dbId}')">
                       <i class="fa fa-trash" aria-hidden="true"></i>
                     </md-button>
-                  </md-list-item>
-                `;
+                  </md-list-item>`;
                   content.append(_ob);
                 }
               } else {
@@ -651,7 +646,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           </md-button>
 
           <md-button class="i_btn" id=${endpoint.id.get()} aria-label="info" ng-click="execute_func_endpoint('file','${endpoint.id.get()}')">
-            <i class="fa fa-paperclip" aria-hidden="true"></i>
+            <i class="fa fa-bar-chart" aria-hidden="true"></i>
           </md-button>
 
         </md-list-item>`;
@@ -662,6 +657,32 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         $compile(contener)($rootScope);
       }
 
+      ////////////////////////////////////////////////////////
+      //                                                    //
+      //        button eyes on endpoint pannel old          //
+      //                                                    //
+      ////////////////////////////////////////////////////////
+      setview(id) {
+        var endpoints = this.model;
+        console.log(endpoints);
+        for (var i = 0; i < endpoints.length; i++) {
+          if (endpoints[i].id.get() == id) {
+            console.log(endpoints[i].display.get());
+            if (endpoints[i].display.get() == false) {
+              endpoints[i].display.set(true); // choix des differents capteur affiché
+              endpoints[i].on_off.set(true); // attribut que le client modifie graçe au capteur ( A SUPPRIMER QUAND LE CLIENT SET DES VALEURS GRACE AU CAPTEUR)
+            } else {
+              endpoints[i].display.set(false); // choix des differents capteur affiché
+              endpoints[i].on_off.set(false); // attribut que le client modifie graçe au capteur ( A SUPPRIMER QUAND LE CLIENT SET DES VALEURS GRACE AU CAPTEUR)
+            }
+            console.log(endpoints[i].display.get());
+          }
+        }
+      }
+
+      //////////////////////////////////////////////////////////
+      //      affichage synchronisé des couleurs              //
+      //////////////////////////////////////////////////////////
 
       viewOrHide() {
         var endpoints = this.model;
@@ -671,8 +692,8 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         var j = 0;
 
         console.log(endpoints);
-        for (j = 0; j < endpoints.length; j++) {
-          if (endpoints[j].display.get() == true)
+        for (var j = 0; j < endpoints.length; j++) {
+          if ((endpoints[j].on_off.get() === true) && (endpoints[j].display.get() === true))
             tab_true.push(endpoints[j]);
           else
             tab_false.push(endpoints[j]);
@@ -686,22 +707,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
       }
 
-      // viewOrHide(id) {
 
-      //   var element = document.getElementsByClassName("show" + id)[0];
-      //   var show = element.getAttribute("show");
-      //   console.log(element);
-      //   if (show == "false") {
-      //     element.setAttribute("show", "true");
-      //     this.changeItemColor(id);
-      //     element.innerHTML = '<i class="fa fa-eye-slash" aria-hidden="true"></i>';
-      //   } else {
-      //     this.restoreColor(id);
-      //     element.setAttribute("show", "false");
-      //     element.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
-      //   }
-
-      // }
 
       //////////////////////////////////////////////////////////////
       //                  Change container                        //
@@ -806,10 +812,8 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
             message.username.set(this.user.username);
             message.date.set(Date.now());
             message.message.set(textAreaValue);
-
             this._selected.endpoints.push(message);
           }
-
         };
 
         sendButtonDiv.appendChild(sendButton);
@@ -918,21 +922,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
       }
 
-      setview(id) {
-        var endpoints = this.model;
-        console.log(endpoints);
-        for (var i = 0; i < endpoints.length; i++) {
-          if (endpoints[i].id.get() == id) {
-            console.log(endpoints[i].display.get());
-            if (endpoints[i].display.get() == false) {
-              endpoints[i].display.set(true);
-            } else {
-              endpoints[i].display.set(false);
-            }
-            console.log(endpoints[i].display.get());
-          }
-        }
-      }
+
 
       deteteMessage(id, formDiv) {
 
@@ -1005,7 +995,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
             this._file_selected.files.force_add_file(files[i].name, filePath, {
               id: newGUID()
             });
-
           }
         }
       }
@@ -1028,7 +1017,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           };
         this.data.datasets[0].data = this.dataset = [];
         this.data.datasets[0].label = chartEndpoint.title.get();
-
 
         for (let i = 0; i < timeseries.value.length; i++) {
           this.dataset.push({
@@ -1057,8 +1045,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
             }
           });
         }
-
-        console.log(this.data);
       }
 
       DisplayFilePanel(id) {
@@ -1106,10 +1092,21 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
               this.current_timeseries.time.clear();
             }, function () {});
           };
-          // clear_chart.style.width = 100;
-          // clear_chart.style.height = 30;
           this.filePanelContent.appendChild(clear_chart);
+
+          var add_chart = document.createElement('button');
+          add_chart.className = "btn btn-primary btn-sm btn-block";
+          add_chart.innerHTML = '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Add';
+
+          add_chart.onclick = () => {
+            this.current_timeseries.value.push(Math.random() * 20);
+            this.current_timeseries.time.push(Date.now());
+            console.log(this.current_timeseries.time);
+            console.log(this.current_timeseries.value);
+          };
+          this.filePanelContent.appendChild(add_chart);
         }
+
         var chartEndpoint;
         console.log(endpoints);
         for (let i = 0; i < endpoints.length; i++) {
@@ -1122,34 +1119,16 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           if (!mod)
             return;
           else {
-            console.log(mod);
-            //console.log(mod.get());
             this.current_timeseries = mod;
             this.endpointBinded = true;
             console.log(this.current_timeseries);
             this.current_timeseriesBindedFunc = this.onEndpointChange.bind(this, this.current_timeseries, chartEndpoint);
             this.current_timeseries.bind(this.current_timeseriesBindedFunc);
           }
-
         });
 
-
         this.filePanel.setVisible(true);
-
-
-        // for (let index = 0; index < endpoints.length; index++) {
-        //   if (endpoints[index].id == id) {
-        //     this._file_selected = endpoints[index];
-        //     break;
-        //   }
-        // }
-
         this.filePanel.setTitle('charts');
-
-        // endpoints.bind(() => {
-        //   this.files_display();
-        // })
-
       }
 
       displayItem(_file, parent) {
@@ -1166,7 +1145,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
                 </md-list-item>`;
 
         var content = angular.element(items);
-
         parent.append(content);
         $compile(content)($rootScope);
       }
@@ -1190,9 +1168,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           _file = this._file_selected.files[i];
           this.displayItem(_file, div);
         }
-
-
-
 
       }
 
