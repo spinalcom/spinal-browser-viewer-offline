@@ -40,7 +40,8 @@ CSS= bower_components/angular-material/angular-material.css \
   bower_components/font-awesome/css/font-awesome.css \
   bower_components/bootstrap/dist/css/bootstrap.min.css \
   bower_components/angular-bootstrap-colorpicker/css/colorpicker.min.css \
-  app/css/app.css
+  app/css/app.css \
+  assets/styles.css
 
 CSSOUT= $(OUTDIR)/css/css.compile.css
 
