@@ -13,8 +13,7 @@ SRC= app/app.js \
   app/controllers/mainCtrl.js \
   app/controllers/navbarCtrl.js \
   app/controllers/forgeViewerCtrl.js \
-  app/controllers/loginCtrl.js \
-  app/run/plugin-annotation.js
+  app/controllers/loginCtrl.js
 
 OUT= $(OUTDIR)/js/app.compile.min.js
 
@@ -28,7 +27,9 @@ LIBSRC= bower_components/angular/angular.min.js \
   bower_components/golden-layout/dist/goldenlayout.min.js \
   bower_components/angular-material-icons/angular-material-icons.min.js \
   bower_components/jquery-ui/jquery-ui.min.js \
-  bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.min.js
+  bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.min.js \
+  bower_components/chart.js/dist/Chart.bundle.min.js
+
 
 LIBOUT= $(OUTDIR)/js/lib.compile.min.js
 
@@ -70,6 +71,7 @@ lib: create_outdir
 css: create_outdir
 	cat $(CSS) | csso -o $(CSSOUT) --map file
 	cp bower_components/font-awesome/fonts/* $(OUTDIR)/fonts -r
+	cp bower_components/bootstrap/fonts/* $(OUTDIR)/fonts -r
 
 watch-js-min:
 	babel $(SRC) -w -o $(OUT) --presets es2015 --presets minify -s
