@@ -1,6 +1,6 @@
 {
   "name": "spinal-browser-viewer-annotations",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.html",
   "bin": {
@@ -16,8 +16,6 @@
     "browserify": "^14.5.0",
     "commander": "^2.13.0",
     "exorcist": "^1.0.0",
-    "resolve-tree": "^0.1.13",
-    "spectrum-colorpicker": "^1.8.0",
     "spinal-browser-drive": "git+https://github.com/spinalcom/spinal-browser-drive.git",
     "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git#2.3.0",
     "spinal-core-hub": "git+https://github.com/spinalcom/spinal-core-hub.git#3.0.0",
