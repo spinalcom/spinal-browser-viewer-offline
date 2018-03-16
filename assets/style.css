@@ -239,17 +239,18 @@ i {
 
 /* ------------------------------- Message Panel --------------------------- */
 
-.messageContainer {
+/* .messageContainer {
     width: 100%;
     height: 85%;
     border: 1px solid #F0F8FF;
-    overflow: scroll;
+    overflow-y: auto;
+    overflow-y: hidden;
 }
 
 .form_div {
     padding-top: 15px;
-    width: 100%;
-    height: 15%;
+    max-width: 100%;
+    min-height: 15%;
 
 }
 
@@ -293,8 +294,15 @@ i {
     width: 80%;
     min-height: 60px;
     float: right;
-    background: #7e8282;
     padding: 5px;
+}
+
+.isUserMessage {
+    background: #1555b4;
+}
+
+.notUserMessage {
+    background: #7e8282;
 }
 
 .message_texte {
@@ -309,7 +317,7 @@ i {
     height: 30px;
     text-align: right;
     color: #fff;
-}
+} */
 
 
 /* -------------------------------------------- File Panel  --------------------------------------*/

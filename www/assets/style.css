@@ -1,4 +1,4 @@
-
+/* 
 
 
 body {
@@ -18,7 +18,7 @@ body {
     background-color: #434545 !important;
 }
 
-/* .panelViewer */ .dockingPanel {
+.dockingPanel {
     height: auto;
     width: auto;
     min-width: 400px;
@@ -236,4 +236,4 @@ i {
       border: 0px;
   }
 
-
+ */
