@@ -28,7 +28,9 @@ LIBSRC= bower_components/angular/angular.min.js \
   bower_components/angular-material-icons/angular-material-icons.min.js \
   bower_components/jquery-ui/jquery-ui.min.js \
   bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.min.js \
-  bower_components/chart.js/dist/Chart.bundle.min.js
+  bower_components/chart.js/dist/Chart.bundle.min.js \
+  bower_components/jspdf/dist/jspdf§.min.js \
+  bower_components/html2canvas/build/html2canvas.min.js
 
 
 LIBOUT= $(OUTDIR)/js/lib.compile.min.js
