@@ -23,6 +23,8 @@ angular.module('app.spinalcom')
                 $location.replace('/drive/');
                 deferred.reject(msg);
               });
+            } else {
+              $location.replace('/drive/');
             }
           }, () => {
             let msg = "not able to load : " + path;
