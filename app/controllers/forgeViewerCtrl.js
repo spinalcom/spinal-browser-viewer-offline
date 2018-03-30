@@ -26,6 +26,7 @@ angular.module('app.spinalforge.plugin')
           },
         };
         spinalRegisterViewerPlugin.register("Autodesk.ADN.Viewing.Extension.Color");
+        spinalRegisterViewerPlugin.register("Autodesk.ADN.Viewing.Extension.EventWatcher");
         // var extensions = ['PanelAnnotation', "Autodesk.ADN.Viewing.Extension.Color"];
 
         var options = {
