@@ -1,6 +1,6 @@
 {
   "name": "spinal-browser-viewer-annotations",
-  "version": "v1.0.4",
+  "version": "v1.0.5",
   "description": "",
   "main": "index.html",
   "bin": {
@@ -16,19 +16,13 @@
     "browserify": "^14.5.0",
     "commander": "^2.13.0",
     "exorcist": "^1.0.0",
-    "spinal-browser-drive":
-      "git+https://github.com/spinalcom/spinal-browser-drive.git",
-    "spinal-core-connectorjs":
-      "git+https://github.com/spinalcom/spinal-core-connectorjs.git",
+    "spinal-browser-drive": "git+https://github.com/spinalcom/spinal-browser-drive.git",
+    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git",
     "spinal-core-hub": "git+https://github.com/spinalcom/spinal-core-hub.git",
-    "spinal-lib-forge-env":
-      "git+https://github.com/spinalcom/spinal-lib-forge-env.git",
-    "spinal-lib-forgefile":
-      "git+https://github.com/spinalcom/spinal-lib-forgefile.git",
-    "spinal-organ-forge":
-      "git+https://github.com/spinalcom/spinal-organ-forge.git",
-    "spinal-lib-viewer-annotation-group-env":
-      "git+https://github.com/spinalcom/spinal-lib-viewer-annotation-group-env.git",
+    "spinal-joint-drive_forge_angular": "git+https://github.com/spinalcom/spinal-joint-drive_forge_angular.git",
+    "spinal-lib-forgefile": "git+https://github.com/spinalcom/spinal-lib-forgefile.git",
+    "spinal-organ-forge": "git+https://github.com/spinalcom/spinal-organ-forge.git",
+    "spinal-lib-viewer-annotation-group-env": "git+https://github.com/spinalcom/spinal-lib-viewer-annotation-group-env.git",
     "uglifyify": "^4.0.5",
     "windowify": "^0.3.0"
   },
