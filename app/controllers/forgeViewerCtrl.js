@@ -50,7 +50,8 @@ angular.module("app.spinalforge.plugin").controller("forgeViewerCtrl", [
 
       var options = {
         env: "Local",
-        docid: ""
+        docid: "",
+        useADP: false
       };
       var docs = [];
 

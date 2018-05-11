@@ -71,6 +71,7 @@ lib: create_outdir
 
 css: create_outdir
 	cat $(CSS) | csso -o $(CSSOUT) --map file
+	cp css/fonts/* $(OUTDIR)/css/
 	cp bower_components/font-awesome/fonts/* $(OUTDIR)/fonts -r
 	cp bower_components/bootstrap/fonts/* $(OUTDIR)/fonts -r
 
