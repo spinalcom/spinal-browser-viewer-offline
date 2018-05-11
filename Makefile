@@ -66,6 +66,7 @@ compile: create_outdir
 	npm run compile -- $(SRC) -o $(OUT)
 
 lib: create_outdir
+	cp node_modules/spinal-core-connectorjs/lib/spinalcore.browser.js $(OUTDIR)/js/spinalcore.browser.js
 	cat $(LIBSRC) > $(LIBOUT)
 
 css: create_outdir

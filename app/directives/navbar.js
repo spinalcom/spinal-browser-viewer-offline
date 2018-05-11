@@ -1,23 +1,26 @@
-angular.module('app.directives')
+angular
+  .module("app.directives")
   .directive("navbar", [
-    function () {
+    function() {
       return {
-        restrict: 'E',
-        templateUrl: 'app/templates/navbar.html',
-        controller: 'navbarCtrl',
+        restrict: "E",
+        templateUrl: "app/templates/navbar.html",
+        controller: "navbarCtrl"
       };
     }
   ])
-  .directive("menuGlayout", ['goldenLayoutService', '$timeout',
-    function (goldenLayoutService, $timeout) {
+  .directive("menuGlayout", [
+    "goldenLayoutService",
+    function(goldenLayoutService) {
       return {
-        restrict: 'E',
+        restrict: "E",
         scope: {
-          layoutInfo: '=info'
+          layoutInfo: "=info"
         },
         replace: true,
-        template: '<li ng-repeat=\"layout in layoutInfo\"  id=\"{{layout.id}}\"><a >{{layout.name}}</a></li>',
-        link: (scope, element, attrs) => {
+        template:
+          '<li ng-repeat="layout in layoutInfo"  id="{{layout.id}}"><a >{{layout.name}}</a></li>',
+        link: scope => {
           goldenLayoutService.wait_ready().then(() => {
             let create_callback = (goldenLayoutService, layout) => {
               return () => {
@@ -26,24 +29,32 @@ angular.module('app.directives')
             };
             for (var i = 0; i < scope.layoutInfo.length; i++) {
               let layout = scope.layoutInfo[i];
-              goldenLayoutService.createDragSource($("#" + layout.id)[0], layout.cfg);
-              $("#" + layout.id).click(create_callback(goldenLayoutService, layout));
+              goldenLayoutService.createDragSource(
+                $("#" + layout.id)[0],
+                layout.cfg
+              );
+              $("#" + layout.id).click(
+                create_callback(goldenLayoutService, layout)
+              );
             }
           });
         }
       };
     }
   ])
-  .directive('ngRightClick', ["$parse", function ($parse) {
-    return function (scope, element, attrs) {
-      var fn = $parse(attrs.ngRightClick);
-      element.bind('contextmenu', function (event) {
-        scope.$apply(function () {
-          event.preventDefault();
-          fn(scope, {
-            $event: event
+  .directive("ngRightClick", [
+    "$parse",
+    function($parse) {
+      return function(scope, element, attrs) {
+        var fn = $parse(attrs.ngRightClick);
+        element.bind("contextmenu", function(event) {
+          scope.$apply(function() {
+            event.preventDefault();
+            fn(scope, {
+              $event: event
+            });
           });
         });
-      });
-    };
-  }]);
+      };
+    }
+  ]);

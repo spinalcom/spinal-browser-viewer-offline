@@ -1,41 +1,55 @@
-angular.module('app.services')
-  .factory('goldenLayoutService', ['$q', '$window', '$templateCache', '$rootScope', '$compile',
-    function ($q, $window, $templateCache, $rootScope, $compile) {
+angular
+  .module("app.services")
+  .factory("goldenLayoutService", [
+    "$q",
+    "$window",
+    "$templateCache",
+    "$rootScope",
+    "$compile",
+    function($q, $window, $templateCache, $rootScope, $compile) {
       var config = {
-        content: [{
-          type: 'row',
-          content: [{
-            isClosable: false,
-            title: "Viewer",
-            type: 'component',
-            componentName: 'SpinalHome',
-            componentState: {
-              template: 'forgeviewer.html',
-              controller: 'forgeViewerCtrl'
-            }
-          }]
-        }]
+        content: [
+          {
+            type: "row",
+            content: [
+              {
+                isClosable: false,
+                title: "Viewer",
+                type: "component",
+                componentName: "SpinalHome",
+                componentState: {
+                  template: "forgeviewer.html",
+                  controller: "forgeViewerCtrl"
+                }
+              }
+            ]
+          }
+        ]
       };
       let myLayout = 0;
       let factory = {};
       factory.init = () => {
         if (myLayout == 0) {
           myLayout = new GoldenLayout(config, $("#g-layout"));
-          myLayout.registerComponent('SpinalHome', function (container, state) {
+          myLayout.registerComponent("SpinalHome", function(container, state) {
             var element = container.getElement();
-            if (state.template == '') {
-
+            if (state.template == "") {
               element.html();
               $compile(element.contents())($rootScope);
             } else {
-              element.html("<div class=\"gpanel-content\" ng-controller=\"" + state.controller + "\" ng-cloak>" +
-                $templateCache.get(state.template) + "</div>");
+              element.html(
+                '<div class="gpanel-content" ng-controller="' +
+                  state.controller +
+                  '" ng-cloak>' +
+                  $templateCache.get(state.template) +
+                  "</div>"
+              );
               $compile(element.contents())($rootScope);
             }
           });
 
           myLayout.init();
-          angular.element($window).bind('resize', function () {
+          angular.element($window).bind("resize", function() {
             myLayout.updateSize();
           });
           $rootScope.$emit("GoldenLayout_READY");
@@ -43,44 +57,40 @@ angular.module('app.services')
       };
 
       factory.wait_ready = () => {
-        return $q(function (resolve, reject) {
+        return $q(function(resolve, reject) {
           $rootScope.$on("GoldenLayout_READY", () => {
             resolve();
           });
         });
       };
 
-
-
-      factory.createChild = (config) => {
+      factory.createChild = config => {
         myLayout.root.contentItems[0].addChild(config);
       };
 
       factory.createDragSource = (element, config) => {
         myLayout.createDragSource(element, config);
-
       };
-
 
       return factory;
     }
   ])
-  .factory('layout_uid', function () {
+  .factory("layout_uid", function() {
     let uid = 0;
-    return ({
+    return {
       get: () => {
         let id = uid++;
         return id;
       }
-    });
+    };
   })
-  .factory('spinalRegisterViewerPlugin', function () {
+  .factory("spinalRegisterViewerPlugin", function() {
     let plugin = [];
-    return ({
+    return {
       get: () => {
         return plugin;
       },
-      register: (name) => {
+      register: name => {
         for (var i = 0; i < plugin.length; i++) {
           if (plugin[i] === name) {
             return;
@@ -88,5 +98,5 @@ angular.module('app.services')
         }
         plugin.push(name);
       }
-    });
+    };
   });
