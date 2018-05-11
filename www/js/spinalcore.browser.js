@@ -1,5 +1,5 @@
 var _root_obj = this;
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 spinalCore = require('../lib/spinalcore.node.js');
 
 },{"../lib/spinalcore.node.js":2}],2:[function(require,module,exports){
@@ -36,6 +36,8 @@ root = typeof _root_obj === "undefined" ? global : window;
 
 root.spinalCore = (function() {
   function spinalCore() {}
+
+  spinalCore._def = {};
 
   spinalCore.connect = function(options) {
     var auth;
@@ -91,6 +93,16 @@ root.spinalCore = (function() {
         return callback_success();
       }
     });
+  };
+
+  spinalCore.register_models = function(modelList) {
+    var len, m, q, results;
+    results = [];
+    for (q = 0, len = modelList.length; q < len; q++) {
+      m = modelList[q];
+      results.push(spinalCore._def[m.name] = m);
+    }
+    return results;
   };
 
   spinalCore.load = function(fs, path, callback_success, callback_error) {
@@ -500,7 +512,11 @@ root.SpinalUserManager = (function() {
     FileSystem._url = options.hostname;
     FileSystem._port = options.port;
     if (FileSystem.CONNECTOR_TYPE === "Node" || FileSystem.is_cordova) {
-      path = "http://" + FileSystem._url + ":" + FileSystem._port + get_cmd;
+      if (FileSystem._port) {
+        path = "http://" + FileSystem._url + ":" + FileSystem._port + get_cmd;
+      } else {
+        path = "http://" + FileSystem._url + get_cmd;
+      }
     } else if (FileSystem.CONNECTOR_TYPE === "Browser") {
       path = get_cmd;
     }
@@ -2435,7 +2451,11 @@ root.FileSystem = (function() {
     var path, xhr_object;
     path = "";
     if (FileSystem.CONNECTOR_TYPE === "Node" || FileSystem.is_cordova) {
-      path = "http://" + FileSystem._url + ":" + FileSystem._port + FileSystem.url_com + ("?s=" + this._session_num);
+      if (FileSystem._port) {
+        path = "http://" + FileSystem._url + ":" + FileSystem._port + FileSystem.url_com + ("?s=" + this._session_num);
+      } else {
+        path = "http://" + FileSystem._url + FileSystem.url_com + ("?s=" + this._session_num);
+      }
     } else if (FileSystem.CONNECTOR_TYPE === "Browser") {
       path = FileSystem.url_com + ("?s=" + this._session_num);
     }
@@ -2604,7 +2624,11 @@ root.FileSystem = (function() {
       fs = FileSystem.get_inst();
       path = "";
       if (FileSystem.CONNECTOR_TYPE === "Node" || FileSystem.is_cordova) {
-        path = "http://" + FileSystem._url + ":" + FileSystem._port + FileSystem.url_com + ("?s=" + fs._session_num + "&p=" + tmp._server_id);
+        if (FileSystem._port) {
+          path = "http://" + FileSystem._url + ":" + FileSystem._port + FileSystem.url_com + ("?s=" + fs._session_num + "&p=" + tmp._server_id);
+        } else {
+          path = "http://" + FileSystem._url + FileSystem.url_com + ("?s=" + fs._session_num + "&p=" + tmp._server_id);
+        }
       } else if (FileSystem.CONNECTOR_TYPE === "Browser") {
         path = FileSystem.url_com + ("?s=" + fs._session_num + "&p=" + tmp._server_id);
       }
@@ -2633,6 +2657,9 @@ root.FileSystem = (function() {
   FileSystem._create_model_by_name = function(name) {
     if (typeof name !== "string") {
       return name;
+    }
+    if (typeof spinalCore._def[name] !== 'undefined') {
+      return new spinalCore._def[name]();
     }
     if (typeof root[name] === 'undefined') {
       root[name] = new Function("return function " + name + " (){" + name + ".super(this);}")();
@@ -2728,7 +2755,11 @@ root.FileSystem = (function() {
       }
       path = "";
       if (FileSystem.CONNECTOR_TYPE === "Node" || FileSystem.is_cordova) {
-        path = "http://" + FileSystem._url + ":" + FileSystem._port + FileSystem.url_com;
+        if (FileSystem._port) {
+          path = "http://" + FileSystem._url + ":" + FileSystem._port + FileSystem.url_com;
+        } else {
+          path = "http://" + FileSystem._url + FileSystem.url_com;
+        }
       } else if (FileSystem.CONNECTOR_TYPE === "Browser") {
         path = FileSystem.url_com;
       }
