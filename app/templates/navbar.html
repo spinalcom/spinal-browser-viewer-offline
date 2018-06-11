@@ -9,6 +9,11 @@
       <span class="caret" ng-if="connected"></span>
     </a>
     <div flex></div>
+    <h2>
+      {{path}}
+      <md-tooltip>{{fullPath}}</md-tooltip>
+    </h2>
+    <div flex></div>
     <div ng-if="connected"
          style="right:0;">
       <span style="vertical-align: sub;">{{username}}</span>

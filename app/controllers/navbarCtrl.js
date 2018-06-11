@@ -12,13 +12,19 @@ angular
       authService.wait_connect().then(() => {
         $scope.username = authService.get_user().username;
         $scope.connected = true;
-        $scope.viewer = $routeParams.filepath;
-        if ($scope.viewer) {
-          $scope.viewer = atob($scope.viewer);
-        } else {
-          $scope.viewer = "viewer";
-        }
-        console.log($routeParams.filepath);
+        setTimeout(() => {
+          $scope.viewer = $routeParams.filepath;
+          if ($scope.viewer) {
+            $scope.viewer = atob($scope.viewer);
+            $scope.fullPath = $scope.viewer;
+            let __path = $scope.fullPath.split("/");
+
+            $scope.path = __path[__path.length - 1];
+          } else {
+            $scope.viewer = "viewer";
+          }
+          console.log("$scope.viewer", $scope.viewer);
+        }, 500);
       });
       $scope.logout = () => {
         $location.path("/login");
